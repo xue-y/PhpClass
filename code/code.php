@@ -1,4 +1,6 @@
 <?php
+namespace phpcode\code
+class code{
 function c_img($w,$h,$size,$num)
 {
 	if(!isset($_SESSION))
@@ -45,5 +47,6 @@ imagefilledarc($img,rand($w/2,$w),rand($h/2,$h),rand($w/4,$w-10),rand($h/3,$h-10
 	}
 	imagegif($img);
 	imagedestroy($img);
+}
 }
 ?>
