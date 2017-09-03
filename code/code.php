@@ -1,4 +1,5 @@
 <?php
+namespace phpcode;
 class code{
 function c_img($w,$h,$size,$num)
 {
