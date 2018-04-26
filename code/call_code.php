@@ -1,7 +1,8 @@
 <?php
-require 'vendor/autoload.php';
-use  phpcode\code;
+//调用测试
+    use code\Code;
 
-$code=new code();
-$code->c_img(70,30,14,4);
-?>
+	include "Code.php";
+	$code=new Code(120,50,18,4);
+	echo $code;
+
