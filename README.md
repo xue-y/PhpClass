@@ -1,2 +1,2 @@
-# phpcode
-php验证码
+### php 常用类
+	> code php验证码
