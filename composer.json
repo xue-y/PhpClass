@@ -1,0 +1,18 @@
+{
+    "name": "xue-y/PhpClass",
+    "description": "A short description of what your package does",
+	"version": "v1.0",
+	 "license": "MIT",
+	"authors": [
+		{
+			"name": "xue-y",
+			"email": "1922527784@qq.com"
+		}
+	],
+    "require": {
+        "php": "^5.3.3 || ^7.0",
+    },
+    "autoload": {
+        "psr-4": { "PhpClass\\": "Class/" }
+    }
+}
