@@ -1,8 +1,6 @@
 {
-    "name": "xue-y/phpcode",
+    "name": "phpClass/code",
     "description": "A short description of what your package does",
-	"version": "v1.0",
-	 "license": "MIT",
 	"authors": [
 		{
 			"name": "xue-y",
@@ -11,7 +9,6 @@
 	],
     "require": {
         "php": "^5.3.3 || ^7.0",
-        "xue-y/phpcode": "1.0"
     },
     "autoload": {
         "psr-4": { "phpcode\\": "code/" }
