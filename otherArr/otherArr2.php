@@ -5,7 +5,7 @@
  * Date: 18-8-15
  * Time: 上午9:46
  * 其他格式的数据 与 数组 互转
- *  cvs 转换中不保留 二维数组第一层循环的 key 值，第二层循环的key为一致的
+ * cvs数据中保留二维数组第一层循环的 key 值
  */
 
 class otherArr {
@@ -43,7 +43,6 @@ class otherArr {
     /**其他格式数据 转 数组
      * @parem $data 要转换的数据
      * @parem $format 原数据格式
-     * @parem $tit_true 二维数组第二层key 值是否相同，默认相同 为true
      * @return arr 如果没有数据传入返回 false
      * */
     public function other_array($data,$format)
@@ -114,12 +113,18 @@ class otherArr {
         {
             if(is_array($v)) // 二维数组
             {
+                $string .= "\t'".$k."'\n";   //二维数组第一层循环的key 值分割符 \t
+
                 if(empty($v_tit)) // 如果第二层循环中的key 值相同，只取一次值
                 {
                     $v_tit=array_keys($v);
-                    $string .= implode($this->cvs_fege,$v_tit)."\n";
+                    $string .= ",".implode($this->cvs_fege,$v_tit)."\n";
                 }
-                $string .= implode($this->cvs_fege,$v)."\n";
+                // 如果第二层循环中的key 值不相同，每次都取值
+                /*$v_tit=array_keys($v);
+                $string .= ",".implode($this->cvs_fege,$v_tit)."\n";*/
+
+                $string .= ",".implode($this->cvs_fege,$v)."\n";
             }
 
         }
@@ -167,26 +172,77 @@ class otherArr {
         return json_decode($data,true);
     }
 
-    /** cvs 转 数组   返回二维数组 **/
+    /** cvs 转 数组 **/
     private function cvs_arr($data)
     {
-        $data=array_values(array_filter(explode("\n",$data)));
-        foreach($data as $k=>$v)
+        $data=array_filter(explode("\t",$data));
+
+        // 判断是一维还是二维数组
+        if(isset($data[0]) && !empty($data[0])) // 二维数组 第一层开头分割使用的 \t，去除空值后下标从1 开始有值
         {
-            if($k<1)
+            $arr_type=1;
+        }else
+        {
+            $arr_type=2;
+            $data=array_values($data); // 重置数组下标
+        }
+
+        $new_data=array();
+        $new_data2=array();
+        if($arr_type==2)  // 二维数组
+        {
+            foreach($data as $k=>$v)  // 先转为二维数组
             {
-                $tit=explode($this->cvs_fege,$v);
-            }else
-            {
-                $v_arr=array_values(array_filter(explode($this->cvs_fege,$v)));
-                foreach($tit as $kkk=>$vvv)
+                $data[$k]=array_filter(explode("\n",$v));
+
+                foreach($data[$k] as $kk=>$vv)
                 {
-                    $new_data[$k-1][$tit[$kkk]]=$v_arr[$kkk];
+                    if($kk==0)          // 取得 二维数组第一层的 key
+                    {
+                        $vv=substr($vv,1,-1);
+                        if(is_numeric($vv)) // 判断是不是索引数组
+                        {
+                            $vv=intval($vv);
+                        }
+                        $v=array_filter(explode("\n",$v));
+                         array_shift($v);
+                        $new_data[$vv]=$v;
+                    }
                 }
             }
+
+           $new_data=array_filter($new_data);
+            // 为二维数组赋 key 值
+            $new_data2=array();
+            $tit=array();
+            foreach($new_data as $k=>$v)
+            {
+                if(count($v)>1) // 如果二维数组 第二次循环如果存在key 值取得 tit
+                {
+                    $tit=array_values(array_filter(explode($this->cvs_fege,$v[0])));
+                    $v_arr=array_values(array_filter(explode($this->cvs_fege,$v[1])));
+                }else
+                {
+                    $v_arr=array_values(array_filter(explode($this->cvs_fege,$v[0])));
+                }
+                foreach($tit as $kkk=>$vvv)
+                {
+                    $new_data2[$k][$tit[$kkk]]=$v_arr[$kkk];
+                }
+            }
+        }else                                           //-----------一维数组
+        {
+            $new_data=explode("\n",$data[0]);
+            $tit=explode($this->cvs_fege,$new_data[0]);
+            $v_arr=explode($this->cvs_fege,$new_data[1]);
+            foreach($tit as $k=>$v)
+            {
+                $new_data2[$tit[$k]]=$v_arr[$k];
+            }
         }
+
         unset($data);
-        return $new_data;
+        return $new_data2;
     }
     //------------------------------------------------------------其他格式转数组 end
 
@@ -292,24 +348,24 @@ $data=array(
     "c"=>array("username"=>"test3","password"=>"789"),
 );
 $data2=array(
-    array("username"=>"汉字","password"=>"123"),
+    array("username"=>"test1","password"=>"123"),
     array("username"=>"test2","password"=>"456"),
     array("username"=>"test3","password"=>"789"),
     array("username"=>"test4","password"=>"111"),
     array("username"=>"test5","password"=>"222"),
 );
 $otherArr=new otherArr();
-$f_data=$otherArr->array_other($data2,"cvs");
-/*var_dump($f_data);
+$f_data=$otherArr->array_other($data,"cvs");
+var_dump($f_data);
 echo "<hr/>";
-$f_data2=$otherArr->other_array($f_data,"cvs");*/
-//var_dump($f_data2);
+$f_data2=$otherArr->other_array($f_data,"cvs");
+var_dump($f_data2);
 
 // 下载 cvs  文件
-$filename = date('Ymd').'.csv'; //设置文件名
+/*$filename = date('Ymd').'.csv'; //设置文件名
 header("Content-type:text/csv");
 header("Content-Disposition:attachment;filename=".$filename);
 header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
 header('Expires:0');
 header('Pragma:public');
-echo $f_data;
+echo $f_data;*/
