@@ -1,5 +1,5 @@
 <?php
-namespace code;
+namespace phpcode;
 
 class Code{
 	
