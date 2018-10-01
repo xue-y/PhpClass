@@ -31,14 +31,14 @@
 
 2: 备份文件中要还原sql 文件标注表名 
 	格式 -- ##* 表名|表名|表名 ##* --
-	可以自定义格式  ```$import_table_fu=" ##* ";```
+	可以自定义格式  $import_table_fu=" ##* ";
 
 3：要还原的数据表与表之间的分界符，与要还原的sql 文件表与表的格式一致
 	< 防止sql 语句过大程序卡死 > 
 	格式：
-	     ```$create_table=PHP_EOL;
-            $create_table.='-- '.str_repeat('--',30).PHP_EOL;
-            $create_table.=PHP_EOL;```
+	    $create_table=PHP_EOL;
+		$create_table.='-- '.str_repeat('--',30).PHP_EOL;
+		$create_table.=PHP_EOL;
 	函数 table_fu()
 
 4：如果备份sql文件中表创建语句前没有删除表语句,原数据表又与sql文件中的表名相同,原表名将更名为【临时表名】；  
