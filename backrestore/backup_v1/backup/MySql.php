@@ -92,6 +92,23 @@ class MySql  extends Backup{
         mysql_free_result($field_type_r);
         return $table_field_type;
     }
+    // 锁表
+    protected function lock_table($table_name)
+    {
+        // 锁表--- 写入受限制，读不限制
+        $lock="lock table ".$table_name." read";
+        $lock_re=mysql_query($lock);
+        return $lock_re;
+    }
+
+    //解表
+    protected function unlock_table($lock_re)
+    {
+        $unlock="unlock tables";
+        $unlock_re=mysql_query($unlock);
+        // 释放锁表 解表
+        $unlock_re=$lock_re=null;
+    }
 
     // 释放资源
     public function __destruct()

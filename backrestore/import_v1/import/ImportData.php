@@ -19,6 +19,6 @@ function import_exec($back_name,$host='127.0.0.1',$db,$dbuser='',$dbpw='',$chars
 		$backup=new MySql($back_name,$host,$db,$dbuser,$dbpw,$charset,$prot,$is_del);
 	}
 	// sql_insert 是父类下的方法
-	$backup->sql_insert(); // 执行写入操作【备份】
+	$backup->sql_insert(); // 执行写入操作【还原】
 }
 //import_exec("medf",'127.0.0.1','test','root','123');
